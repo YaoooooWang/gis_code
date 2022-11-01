@@ -1,0 +1,131 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+install.packages("maptools")
+
+install.packages(c("classInt", "tmap"))
+install.packages(c("RColorBrewer", "sp", "rgeos", 
+                   "tmaptools", "sf", "downloader", "rgdal", 
+                   "geojsonio"))
+
+
+```
+
+```{r}
+
+library(maptools)
+library(RColorBrewer)
+library(classInt)
+library(sp)
+library(rgeos)
+library(tmap)
+library(tmaptools)
+library(sf)
+library(rgdal)
+library(geojsonio)
+library(tidyverse)
+library(here)
+library(sf)
+library(janitor)
+
+```
+
+
+```{r}
+
+EW <- st_read(here::here("I:/CASA/casa0005/week4/homework/london",
+                        
+                        "World_Countries__Generalized_.shp"))
+
+report <- read_csv(here::here("I:/CASA/casa0005/week4/homework", 
+                             "genderInequality_201019.csv"),
+                              na= "NULL")
+
+LO <- st_read(here::here("I:/CASA/casa0005/week4/homework/Local", 
+                      "Local_Authority_Districts_(December_2015)_Boundaries.shp"))
+
+WA <- st_read(here::here("I:/CASA/casa0005/week4/homework/WASH", 
+                      "Washington_Counties_with_Natural_Shoreline___washsh_area.shp"))
+
+re <- read_csv(here::here("I:/CASA/casa0005/week4/homework", 
+                             "Report_Card_Assessment_Data_2018-19_School_Year (1).csv"),
+                              na= "NULL")
+
+
+```
+
+```{r}
+
+county_only <- report %>%
+  clean_names()%>%
+  select(country,difference)
+  
+
+```
+
+```{r}
+
+joined_data <- merge(EW, report)
+
+
+```
+
+```{r}
+install.packages("ggplot")
+install.packages("mapdata")
+library(tmap)
+library(tmaptools)
+library(ggplot2)
+library(mapdata)
+library(maptools)
+library(ggplot2)
+library(plyr)
+
+plot(EW)
+
+```
+
+```{r}
+
+
+bbox_county <- EW %>%
+  st_bbox(.)
+
+
+```
+
+```{r}
+
+  
+  
+  tm_shape(joined_data) + 
+  tm_polygons("difference", 
+              style="pretty",
+              palette="Blues",
+              midpoint=NA,
+              #title="Difference",
+              alpha = 0.5) + 
+  tm_compass(position = c("left", "bottom"),type = "arrow") + 
+  tm_scale_bar(position = c("left", "bottom")) +
+  tm_layout(title = "Difference in life expectancy", legend.position = c("right", "bottom"))
+
+
+
+
+
+
+```
+
+```{r}
+
+tmap_mode("plot")
+qtm(joined_data,
+    fill = "difference")
+
+
+
+```
+
